@@ -13,6 +13,8 @@ export default async function ProductPage({
   const product = await prisma.product.findUnique({ where: { id } });
   if (!product) notFound();
 
+  const buyHref = `/api/click?productId=${product.id}`;
+
   return (
     <main className="min-h-screen">
       <header className="px-6 py-5 border-b border-border">
@@ -43,10 +45,7 @@ export default async function ProductPage({
           ₹{product.price.toLocaleString("en-IN")}
         </p>
 
-        
-          href={`/api/click?productId=${product.id}`}
-          className="inline-block bg-marigold text-ink font-semibold px-6 py-3 rounded-sm hover:brightness-110 transition-[filter]"
-        >
+        <a href={buyHref} className="inline-block bg-marigold text-ink font-semibold px-6 py-3 rounded-sm hover:brightness-110 transition-[filter]">
           Buy on {product.marketplace[0].toUpperCase() + product.marketplace.slice(1)}
         </a>
 
