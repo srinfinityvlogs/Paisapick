@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+/* Signature element: the "ticket" card — dashed edge like a market coupon,
+   with a die-cut notch on the left to evoke a torn stub. */
+.ticket {
+  position: relative;
+  background: theme("colors.surface");
+  border: 1px solid theme("colors.border");
+  border-radius: theme("borderRadius.ticket");
+}
+.ticket::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background: theme("colors.ink");
+  border: 1px solid theme("colors.border");
+  border-radius: 999px;
+}
+
+.price-tag {
+  font-family: var(--font-mono);
+  letter-spacing: -0.01em;
+}
+
+/* Visible keyboard focus, per accessibility floor */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid theme("colors.marigold");
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
