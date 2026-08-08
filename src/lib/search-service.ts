@@ -4,12 +4,23 @@
 
 import { prisma } from "@/lib/db";
 import { parseQuery } from "@/lib/parser";
-import { rankProducts } from "@/lib/rank";
+import { rankProducts, type Rankable } from "@/lib/rank";
+
+export type RankedProduct = Rankable & {
+  id: string;
+  title: string;
+  brand: string | null;
+  price: number;
+  image: string;
+  rating: number;
+  reviewCount: number;
+  marketplace: string;
+};
 
 export type SearchResult = {
   query: string;
   parsed: { category: string | null; budget: number | null };
-  results: Awaited<ReturnType<typeof executeSearch>>["results"];
+  results: RankedProduct[];
 };
 
 /**
@@ -36,9 +47,12 @@ export async function executeSearch(
     take: 100,
   });
 
-  const ranked = rankProducts(
-    products.map((p) => ({ ...p, clickCount: p._count.clicks }))
-  ).slice(0, 10);
+  const mapped: RankedProduct[] = products.map((p) => ({
+    ...p,
+    clickCount: p._count.clicks,
+  }));
+
+  const ranked: RankedProduct[] = rankProducts(mapped).slice(0, 10);
 
   // Fire-and-forget search log — don't block the response
   prisma.searchLog

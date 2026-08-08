@@ -1,22 +1,9 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { prisma } from "@/lib/db";
-import { parseQuery } from "@/lib/parser";
-import { rankProducts, type Rankable } from "@/lib/rank";
+import { executeSearch } from "@/lib/search-service";
 import ProductCard from "@/components/ProductCard";
 
 export const dynamic = "force-dynamic";
-
-type ProductWithClicks = Rankable & {
-  id: string;
-  title: string;
-  brand: string | null;
-  price: number;
-  image: string;
-  rating: number;
-  reviewCount: number;
-  marketplace: string;
-};
 
 export default async function SearchPage({
   searchParams,
@@ -25,30 +12,8 @@ export default async function SearchPage({
 }) {
   const resolvedParams = await searchParams;
   const rawQuery = resolvedParams.q ?? "";
-  const parsed = parseQuery(rawQuery);
 
-  const products = await prisma.product.findMany({
-    where: {
-      ...(parsed.category ? { category: parsed.category } : {}),
-      ...(parsed.budget ? { price: { lte: parsed.budget } } : {}),
-    },
-    include: { _count: { select: { clicks: true } } },
-    take: 100,
-  });
-
-  const mapped: ProductWithClicks[] = products.map((p) => ({
-    ...p,
-    clickCount: p._count.clicks,
-  }));
-
-  const ranked: ProductWithClicks[] = rankProducts(mapped).slice(0, 10);
-
-  // fire-and-forget search log
-  prisma.searchLog
-    .create({
-      data: { query: rawQuery, category: parsed.category, budget: parsed.budget ?? undefined },
-    })
-    .catch(() => {});
+  const { parsed, results } = await executeSearch(rawQuery);
 
   return (
     <main className="min-h-screen flex flex-col">
@@ -69,7 +34,7 @@ export default async function SearchPage({
         )}
         {!parsed.category && !parsed.budget && <div className="mb-6" />}
 
-        {ranked.length === 0 ? (
+        {results.length === 0 ? (
           <div className="ticket p-6 pl-8 text-center">
             <p className="text-paper/60">
               No picks matched that search yet — try a broader term or a different budget.
@@ -77,7 +42,7 @@ export default async function SearchPage({
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {ranked.map((p) => (
+            {results.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
