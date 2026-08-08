@@ -1,6 +1,15 @@
 // Affiliate link generation.
-// PaisaPick's Amazon Associates store ID.
-const AMAZON_ASSOCIATE_TAG = "dealskingon0b-21";
+// The Amazon Associates store ID is loaded from the environment
+// so it can be changed per-deployment without rebuilding.
+
+const AMAZON_ASSOCIATE_TAG = process.env.AMAZON_ASSOCIATE_TAG;
+
+if (!AMAZON_ASSOCIATE_TAG) {
+  throw new Error(
+    "AMAZON_ASSOCIATE_TAG environment variable is required. " +
+      "Set it in .env.local or your deployment environment."
+  );
+}
 
 /**
  * Builds a valid Amazon India affiliate URL from an ASIN.
@@ -8,5 +17,8 @@ const AMAZON_ASSOCIATE_TAG = "dealskingon0b-21";
  * construct links from API responses that don't already include your tag.
  */
 export function buildAmazonAffiliateUrl(asin: string): string {
-  return `https://www.amazon.in/dp/${asin}?tag=${AMAZON_ASSOCIATE_TAG}`;
+  if (!asin || typeof asin !== "string") {
+    throw new Error(`Invalid ASIN: ${asin}`);
+  }
+  return `https://www.amazon.in/dp/${encodeURIComponent(asin)}?tag=${AMAZON_ASSOCIATE_TAG}`;
 }

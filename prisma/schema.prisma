@@ -29,6 +29,8 @@ model Product {
   clicks Click[]
 
   @@index([category])
+  @@index([category, price]) // Composite index for budget-filtered search
+  @@unique([asin, marketplace]) // Prevent duplicate product entries
 }
 
 model SearchLog {
@@ -46,4 +48,15 @@ model Click {
   createdAt DateTime @default(now())
 
   @@index([productId])
+}
+// Tracks clicks on items in hand-curated "Finds" collections (see src/data/collections.ts).
+// Not tied to the Product table since these are static, manually maintained lists.
+model FindClick {
+  id             String   @id @default(cuid())
+  collectionSlug String
+  itemId         String
+  createdAt      DateTime @default(now())
+
+  @@index([collectionSlug])
+  @@index([itemId])
 }

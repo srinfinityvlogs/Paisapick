@@ -1,44 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import { parseQuery } from "@/lib/parser";
-import { rankProducts } from "@/lib/rank";
+import { isRateLimited, getClientIp } from "@/lib/rate-limit";
+import { sanitizeSearchQuery, sanitizeBudget } from "@/lib/validation";
+import { executeSearch } from "@/lib/search-service";
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   const searchParams = req.nextUrl.searchParams;
-  const rawQuery = searchParams.get("q") ?? "";
-  const categoryOverride = searchParams.get("category");
-  const budgetOverride = searchParams.get("budget");
+  const rawQuery = sanitizeSearchQuery(searchParams.get("q") ?? "");
+  const categoryOverride = searchParams.get("category") ?? undefined;
+  const budgetOverride = sanitizeBudget(searchParams.get("budget")) ?? undefined;
 
-  const parsed = parseQuery(rawQuery);
-  const category = categoryOverride || parsed.category;
-  const budget = budgetOverride ? parseInt(budgetOverride, 10) : parsed.budget;
-
-  const products = await prisma.product.findMany({
-    where: {
-      ...(category ? { category } : {}),
-      ...(budget ? { price: { lte: budget } } : {}),
-    },
-    include: {
-      _count: { select: { clicks: true } },
-    },
-    take: 100,
+  const result = await executeSearch(rawQuery, {
+    category: categoryOverride,
+    budget: budgetOverride,
   });
 
-  const ranked = rankProducts(
-    products.map((p) => ({
-      ...p,
-      clickCount: p._count.clicks,
-    }))
-  ).slice(0, 10);
-
-  // Log the search (fire and forget — don't block the response on this)
-  prisma.searchLog
-    .create({ data: { query: rawQuery, category, budget: budget ?? undefined } })
-    .catch((err) => console.error("searchLog failed", err));
-
-  return NextResponse.json({
-    query: rawQuery,
-    parsed: { category, budget },
-    results: ranked,
-  });
+  return NextResponse.json(result);
 }

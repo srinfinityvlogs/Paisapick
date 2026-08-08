@@ -7,7 +7,6 @@
 export type ParsedQuery = {
   category: string | null;
   budget: number | null;
-  sort: "rating" | "price";
 };
 
 // Maps user words to the category values stored in the Product table.
@@ -64,6 +63,5 @@ export function parseQuery(rawQuery: string): ParsedQuery {
   return {
     category: extractCategory(rawQuery),
     budget: extractBudget(rawQuery),
-    sort: "rating",
   };
 }

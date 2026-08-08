@@ -15,7 +15,10 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PaisaPick — Find the Best Deals",
+  title: {
+    default: "PaisaPick — Find the Best Deals",
+    template: "%s | PaisaPick",
+  },
   description:
     "Search any product in plain language and get ranked picks with real Buy links.",
 };

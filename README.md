@@ -6,7 +6,7 @@ Associate tag **dealskingon0b-21**.
 
 ## Stack
 
-- Next.js 14 (App Router) + TypeScript + Tailwind
+- Next.js 16 (App Router) + TypeScript + Tailwind
 - Postgres via Prisma (use Neon or Supabase free tier)
 - Hosted entirely on Vercel free tier
 

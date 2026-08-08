@@ -1,6 +1,5 @@
-"use client";
-
 import Link from "next/link";
+import Image from "next/image";
 
 type Product = {
   id: string;
@@ -29,14 +28,13 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <div className="ticket flex gap-4 p-4 pl-6">
       <div className="w-20 h-20 shrink-0 rounded-sm bg-ink/60 border border-border overflow-hidden flex items-center justify-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={product.image}
           alt={product.title}
+          width={80}
+          height={80}
           className="object-cover w-full h-full"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = "none";
-          }}
+          sizes="80px"
         />
       </div>
 
@@ -67,7 +65,10 @@ export default function ProductCard({ product }: { product: Product }) {
         <span className="text-[10px] uppercase tracking-wider text-paper/40 border border-border rounded-sm px-1.5 py-0.5">
           {product.marketplace}
         </span>
-        <a href={buyHref} className="bg-marigold text-ink text-sm font-semibold px-4 py-2 rounded-sm hover:brightness-110 transition-[filter]">
+        <a
+          href={buyHref}
+          className="bg-marigold text-ink text-sm font-semibold px-4 py-2 rounded-sm hover:brightness-110 transition-[filter]"
+        >
           Buy Now
         </a>
       </div>

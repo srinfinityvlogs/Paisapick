@@ -1,6 +1,6 @@
-// Seed script — populates ~30 manually curated products for Phase 1.
-// Replace these with your own real, verified Amazon product links/prices
-// before going live. ASINs below are placeholders — swap for real ones.
+// Seed script — populates ~20 manually curated products for Phase 1.
+// Replace placeholder ASINs and images with real, verified Amazon product
+// data before deploying to production.
 
 import { PrismaClient } from "@prisma/client";
 import { buildAmazonAffiliateUrl } from "../src/lib/affiliate";
@@ -52,28 +52,51 @@ const products: SeedProduct[] = [
 ];
 
 async function main() {
-  console.log("Seeding PaisaPick products...");
-  await prisma.click.deleteMany();
-  await prisma.product.deleteMany();
+  // Guard against seeding placeholder data in production
+  const placeholders = products.filter(
+    (p) => p.asin.includes("PLACEHOLD") || p.image.includes("placeholder")
+  );
 
-  for (const p of products) {
-    await prisma.product.create({
-      data: {
-        title: p.title,
-        brand: p.brand,
-        price: p.price,
-        image: p.image,
-        rating: p.rating,
-        reviewCount: p.reviewCount,
-        category: p.category,
-        marketplace: "amazon",
-        asin: p.asin,
-        affiliateUrl: buildAmazonAffiliateUrl(p.asin),
-      },
-    });
+  if (placeholders.length > 0 && process.env.NODE_ENV === "production") {
+    console.error(
+      `\n❌ ERROR: ${placeholders.length} products still have placeholder ASINs or images.\n` +
+        `Replace them with real Amazon data before seeding production.\n` +
+        `Products: ${placeholders.map((p) => p.title).join(", ")}\n`
+    );
+    process.exit(1);
   }
 
-  console.log(`Seeded ${products.length} products.`);
+  if (placeholders.length > 0) {
+    console.warn(
+      `⚠️  WARNING: ${placeholders.length}/${products.length} products have placeholder data. OK for development.\n`
+    );
+  }
+
+  console.log("Seeding PaisaPick products...");
+
+  // Atomic delete: clear clicks before products (FK constraint)
+  await prisma.$transaction([
+    prisma.click.deleteMany(),
+    prisma.product.deleteMany(),
+  ]);
+
+  // Batch insert — single round-trip instead of N sequential creates
+  await prisma.product.createMany({
+    data: products.map((p) => ({
+      title: p.title,
+      brand: p.brand,
+      price: p.price,
+      image: p.image,
+      rating: p.rating,
+      reviewCount: p.reviewCount,
+      category: p.category,
+      marketplace: "amazon" as const,
+      asin: p.asin,
+      affiliateUrl: buildAmazonAffiliateUrl(p.asin),
+    })),
+  });
+
+  console.log(`✅ Seeded ${products.length} products.`);
 }
 
 main()

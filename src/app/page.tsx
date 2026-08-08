@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const POPULAR_SEARCHES = [
   "Best mobile under 10000",
@@ -10,30 +12,26 @@ const POPULAR_SEARCHES = [
 export default function HomePage() {
   return (
     <main className="min-h-screen flex flex-col">
-      <header className="px-6 py-5 flex items-center justify-between border-b border-border">
-        <span className="font-display text-xl text-paper">
-          Paisa<span className="text-marigold">Pick</span>
-        </span>
-        <nav className="flex gap-5 text-sm text-paper/60">
-          <Link href="/about" className="hover:text-paper">About</Link>
-          <Link href="/disclosure" className="hover:text-paper">Disclosure</Link>
-        </nav>
-      </header>
+      <Header />
 
       <section className="flex-1 flex flex-col items-center justify-center px-6 py-20 text-center">
         <p className="text-rupee text-sm tracking-[0.2em] uppercase mb-3">
           Paisa vasool, guaranteed
         </p>
         <h1 className="font-display text-4xl sm:text-5xl text-paper max-w-xl leading-tight">
-          Say what you want. We'll find the best deal.
+          Say what you want. We&apos;ll find the best deal.
         </h1>
         <p className="text-paper/50 mt-4 max-w-md">
-          Type it like you'd say it to a friend — "best mobile under 10000" —
+          Type it like you&apos;d say it to a friend — &quot;best mobile under 10000&quot; —
           and get ranked picks with real Buy links.
         </p>
 
         <form action="/search" className="mt-10 w-full max-w-lg flex gap-2">
+          <label htmlFor="home-search" className="sr-only">
+            Search products
+          </label>
           <input
+            id="home-search"
             type="text"
             name="q"
             placeholder="Best phone under 15000..."
@@ -61,12 +59,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="px-6 py-5 border-t border-border text-center text-xs text-paper/30">
-        As an Amazon Associate, PaisaPick earns from qualifying purchases.{" "}
-        <Link href="/disclosure" className="underline hover:text-paper/60">
-          Learn more
-        </Link>
-      </footer>
+      <Footer />
     </main>
   );
 }
