@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import FindItemCard from "@/components/FindItemCard";
 import { collections } from "@/data/collections";
 
 export default async function CollectionPage({
@@ -23,18 +24,7 @@ export default async function CollectionPage({
         <div className="flex flex-col gap-4">
           {collection.items.map((item) => {
             const buyHref = `/api/find-click?collection=${collection.slug}&item=${item.id}`;
-            return (
-              <div key={item.id} className="ticket flex items-center justify-between gap-4 p-4 pl-6">
-                <div>
-                  <p className="font-display text-lg text-paper">{item.name}</p>
-                  {item.blurb && <p className="text-sm text-paper/50 mt-1">{item.blurb}</p>}
-                  <p className="price-tag text-xl text-rupee mt-2">₹{item.price.toLocaleString("en-IN")}</p>
-                </div>
-                <a href={buyHref} target="_blank" rel="noopener noreferrer" className="bg-marigold text-ink text-sm font-semibold px-4 py-2 rounded-sm hover:brightness-110 transition-[filter] shrink-0">
-                  Buy Now
-                </a>
-              </div>
-            );
+            return <FindItemCard key={item.id} item={item} buyHref={buyHref} />;
           })}
         </div>
       </section>
