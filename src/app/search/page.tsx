@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { executeSearch } from "@/lib/search-service";
@@ -23,7 +24,7 @@ export default async function SearchPage({
         <p className="text-paper/50 text-sm mb-1">Search</p>
         <h1 className="font-display text-2xl text-paper mb-1">&quot;{rawQuery}&quot;</h1>
         {(parsed.category || parsed.budget) && (
-          <p className="text-xs text-paper/40 mb-6">
+          <p className="text-xs text-paper/40 mb-3">
             Understood as:{" "}
             {parsed.category && <span className="text-rupee">{parsed.category}</span>}
             {parsed.category && parsed.budget && " · "}
@@ -32,7 +33,14 @@ export default async function SearchPage({
             )}
           </p>
         )}
-        {!parsed.category && !parsed.budget && <div className="mb-6" />}
+        {!parsed.category && !parsed.budget && <div className="mb-3" />}
+
+        <p className="text-xs text-paper/40 mb-6">
+          This search only covers a small, hand-picked set of products while we&apos;re between
+          marketplace integrations — for a guaranteed match, browse{" "}
+          <Link href="/finds" className="underline hover:text-paper">our curated Finds</Link>{" "}
+          instead.
+        </p>
 
         {results.length === 0 ? (
           <div className="ticket p-6 pl-8 text-center">

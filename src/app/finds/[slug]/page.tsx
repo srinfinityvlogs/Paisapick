@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FindItemCard from "@/components/FindItemCard";
+import BuyingTips from "@/components/BuyingTips";
 import { collections } from "@/data/collections";
 
 export default async function CollectionPage({
@@ -13,6 +14,8 @@ export default async function CollectionPage({
   const collection = collections.find((c) => c.slug === slug);
   if (!collection) notFound();
 
+  const sortedItems = [...collection.items].sort((a, b) => a.price - b.price);
+
   return (
     <main className="min-h-screen flex flex-col">
       <Header />
@@ -22,11 +25,13 @@ export default async function CollectionPage({
         <p className="text-paper/50 mb-8">{collection.description}</p>
 
         <div className="flex flex-col gap-4">
-          {collection.items.map((item) => {
+          {sortedItems.map((item) => {
             const buyHref = `/api/find-click?collection=${collection.slug}&item=${item.id}`;
             return <FindItemCard key={item.id} item={item} buyHref={buyHref} />;
           })}
         </div>
+
+        <BuyingTips />
       </section>
 
       <Footer />

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BuyingTips from "@/components/BuyingTips";
 import { collections } from "@/data/collections";
 
 export default function FindsHubPage() {
@@ -21,6 +22,8 @@ export default function FindsHubPage() {
             </Link>
           ))}
         </div>
+
+        <BuyingTips />
       </section>
 
       <Footer />
