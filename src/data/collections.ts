@@ -30,6 +30,10 @@ export const collections: Collection[] = [
       { id: "kitchen-wallpaper", name: "Kitchen Wallpaper (Oil & Water Proof)", price: 174, url: "https://link.amazon/B01mfvuTW", image: "https://m.media-amazon.com/images/I/61MOamcjZoL._SL1500_.jpg" },
       { id: "soap-stand", name: "Soap Stand", price: 279, url: "https://link.amazon/B07a1CVLh", image: "https://m.media-amazon.com/images/I/41BdSR9jl4L._SX679_.jpg" },
       { id: "sink-strainer", name: "Sink Strainer", price: 479, url: "https://link.amazon/B077sshYj", image: "https://m.media-amazon.com/images/I/6140iA2aRFL._SL1500_.jpg" },
+      { id: "magic-eraser-sponge", name: "Magic Eraser Sponge (Pack of 6)", price: 289, url: "https://link.amazon/B0enBZAdZ", image: "https://m.media-amazon.com/images/I/81c8UbmuUsL._SL1500_.jpg" },
+      { id: "magic-foam-cleaner-spray", name: "Magic Foam Cleaner Spray | All in One Kitchen Cleaner Foam Spray", price: 199, url: "https://link.amazon/B073eSP70", image: "https://m.media-amazon.com/images/I/714eiwyv2SL._SL1500_.jpg" },
+      { id: "kitchen-cleaning-spray", name: "Kitchen Cleaning Spray", price: 202, url: "https://link.amazon/B02zm0RNi", image: "https://m.media-amazon.com/images/I/51GKpjori4L._SL1000_.jpg" },
+      { id: "foldable-desktop-mop", name: "Foldable Desktop Mop for Kitchen", price: 188.1, url: "https://link.amazon/B0htXBr8G", image: "https://m.media-amazon.com/images/I/61ewRI0fn2L._SL1500_.jpg" },
     ],
   },
   {
